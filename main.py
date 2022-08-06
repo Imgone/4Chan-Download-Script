@@ -1,92 +1,51 @@
-from urllib import request
+from concurrent.futures import thread
+from abbreviations import BOARD_ABBREVIATIONS
+import requests, re, json
 
-#Eventually scrape 4chan.org to auto create this dict
-BOARD_ABBREVIATIONS = {
-    "Anime & Manga": "a",
-    "Anime/Cute": "c",
-    "Anime/Wallpapers": "w",
-    "Mecha": "m",
-    "Cosplay & EGL": "cgl",
-    "Cute/Male": "cm",
-    "Flash": "f",
-    "Transportation": "n",
-    "Otaku Culture": "jp",
-    "Virtual YouTubers": "vt",
-    "Video Games": "v",
-    "Video Game Generals": "vg",
-    "Video Games/Multiplayer": "vm",
-    "Video Games/Mobile": "vmg",
-    "Pokemon": "vp",
-    "Retro Games": "vr",
-    "Video Games/RPG": "vrpg",
-    "Video Games/Strategy": "vst",
-    "Comics & Cartoons": "co",
-    "Technology": "g",
-    "Television & Film": "tv",
-    "Weapons": "k",
-    "Auto": "o",
-    "Animals & Nature": "an",
-    "Traditional Games": "tg",
-    "Sports": "sp",
-    "Extreme Sports": "xs",
-    "Professional Wrestling": "pw",
-    "Science & Math": "sci",
-    "History & Humanities": "his",
-    "International": "int",
-    "Outdoors": "out",
-    "Toys": "toy",
-    "Oekaki": "i",
-    "Papercraft & Origami": "po",
-    "Photography": "p",
-    "Food & Cooking": "ck",
-    "Artwork/Critique": "ic",
-    "Wallpaper/General": "wg",
-    "Literature": "lit",
-    "Music": "mu",
-    "Fashion": "fa",
-    "3DCG": "3",
-    "Graphic Design": "gd",
-    "Do-It-Yourself": "diy",
-    "Worksafe GIF": "wsg",
-    "Quests": "qst",
-    "Business & Finance": "biz",
-    "Travel": "trv",
-    "Fitness": "fit",
-    "Paranormal": "x",
-    "Advice": "adv",
-    "LGBT": "lgbt",
-    "Pony": "mlp",
-    "Current News": "news",
-    "Worksafe Requests": "wsr",
-    "Very Important Posts": "vip",
-    "Random": "b",
-    "ROBOT9001": "r9k",
-    "Politically Incorrect": "pol",
-    "International/Random": "bant",
-    "Cams & Meetups": "soc",
-    "Shit 4chan Says": "s4s",
-    "Sexy Beautiful Women": "s",
-    "Hardcore": "hc",
-    "Handsome Men": "hm",
-    "Hentai": "h",
-    "Ecchi": "e",
-    "Yuri": "u",
-    "Hentai/Alternative": "d",
-    "Yaoi": "y",
-    "Torrents": "t",
-    "High Resolution": "hr",
-    "Adult GIF": "gif",
-    "Adult Cartoons": "aco",
-    "Adult Requests": "r"
-}
+
 
 board_selection = input("Please enter the board abbrevation you'd like to scrape\n")
+abbreviation_check = True # If true, user input an abbreviation, false if using full name of board
 
 if(board_selection in BOARD_ABBREVIATIONS.values()):
     pass
 elif(board_selection in BOARD_ABBREVIATIONS):
+    abbreviation_check = False
     pass
 else:
     print("Board not found")
     exit()
 
+# if user gives the name of a board, convert it to the abbreviation
+if(not abbreviation_check):
+    board_selection = BOARD_ABBREVIATIONS.get(board_selection)
+
+website_url = 'https://a.4cdn.org/' + board_selection + '/threads.json'
+initial_request = requests.get(website_url)
+thread_num_list = []
+thread_num_list_raw = json.loads(initial_request.text)
+
+for i in range(len(thread_num_list_raw)):
+    for j in range(len(thread_num_list_raw[i].get("threads"))):
+        thread_num_list.append(thread_num_list_raw[i].get("threads")[j]["no"])
+
+# this can be a check for duplicates, currently not implemented because sets are not accessible by index in python
+# thread_list = set(thread_list)
+
+thread_json_url = []
+
+# 4chan API, gives each thread as JSON object 
+# for i in range(len(thread_num_list)):
+#     thread_json_url.append("https://a.4cdn.org/" + board_selection + "/thread/" + str(thread_num_list[i]) + ".json")
+
+# print(thread_json_url)
+
+# print(thread_num_list[0])
+
+for i in range(len(thread_num_list)):
+    total_string = ''
+    total_string = ("https://a.4cdn.org/" + board_selection + "/thread/" + str(thread_num_list[i]) + ".json")
+    thread_json_url.append(total_string)
+
+# thread_json_url is now a list of every JSON api request for every thread on a board
+print(len(thread_json_url))
