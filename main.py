@@ -1,0 +1,92 @@
+from urllib import request
+
+#Eventually scrape 4chan.org to auto create this dict
+BOARD_ABBREVIATIONS = {
+    "Anime & Manga": "a",
+    "Anime/Cute": "c",
+    "Anime/Wallpapers": "w",
+    "Mecha": "m",
+    "Cosplay & EGL": "cgl",
+    "Cute/Male": "cm",
+    "Flash": "f",
+    "Transportation": "n",
+    "Otaku Culture": "jp",
+    "Virtual YouTubers": "vt",
+    "Video Games": "v",
+    "Video Game Generals": "vg",
+    "Video Games/Multiplayer": "vm",
+    "Video Games/Mobile": "vmg",
+    "Pokemon": "vp",
+    "Retro Games": "vr",
+    "Video Games/RPG": "vrpg",
+    "Video Games/Strategy": "vst",
+    "Comics & Cartoons": "co",
+    "Technology": "g",
+    "Television & Film": "tv",
+    "Weapons": "k",
+    "Auto": "o",
+    "Animals & Nature": "an",
+    "Traditional Games": "tg",
+    "Sports": "sp",
+    "Extreme Sports": "xs",
+    "Professional Wrestling": "pw",
+    "Science & Math": "sci",
+    "History & Humanities": "his",
+    "International": "int",
+    "Outdoors": "out",
+    "Toys": "toy",
+    "Oekaki": "i",
+    "Papercraft & Origami": "po",
+    "Photography": "p",
+    "Food & Cooking": "ck",
+    "Artwork/Critique": "ic",
+    "Wallpaper/General": "wg",
+    "Literature": "lit",
+    "Music": "mu",
+    "Fashion": "fa",
+    "3DCG": "3",
+    "Graphic Design": "gd",
+    "Do-It-Yourself": "diy",
+    "Worksafe GIF": "wsg",
+    "Quests": "qst",
+    "Business & Finance": "biz",
+    "Travel": "trv",
+    "Fitness": "fit",
+    "Paranormal": "x",
+    "Advice": "adv",
+    "LGBT": "lgbt",
+    "Pony": "mlp",
+    "Current News": "news",
+    "Worksafe Requests": "wsr",
+    "Very Important Posts": "vip",
+    "Random": "b",
+    "ROBOT9001": "r9k",
+    "Politically Incorrect": "pol",
+    "International/Random": "bant",
+    "Cams & Meetups": "soc",
+    "Shit 4chan Says": "s4s",
+    "Sexy Beautiful Women": "s",
+    "Hardcore": "hc",
+    "Handsome Men": "hm",
+    "Hentai": "h",
+    "Ecchi": "e",
+    "Yuri": "u",
+    "Hentai/Alternative": "d",
+    "Yaoi": "y",
+    "Torrents": "t",
+    "High Resolution": "hr",
+    "Adult GIF": "gif",
+    "Adult Cartoons": "aco",
+    "Adult Requests": "r"
+}
+
+board_selection = input("Please enter the board abbrevation you'd like to scrape\n")
+
+if(board_selection in BOARD_ABBREVIATIONS.values()):
+    pass
+elif(board_selection in BOARD_ABBREVIATIONS):
+    pass
+else:
+    print("Board not found")
+    exit()
+
