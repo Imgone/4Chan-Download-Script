@@ -1,12 +1,23 @@
 from concurrent.futures import ThreadPoolExecutor, thread
 from threading import Thread,local
+from tokenize import String
+from xmlrpc.client import Boolean
 from requests.sessions import Session
 from abbreviations import BOARD_ABBREVIATIONS
 import requests, re, json
+import os.path
+import datetime
 
 
 
 board_selection = input("Please enter the board abbrevation you'd like to scrape\n")
+image_limit = input("Would you like to limit how many images to download? Enter a number or leave blank to download all images.\n")
+file_path = input("Where would you like images stored? Please use the full pathname\n")
+try:
+    image_limit = int(image_limit)
+except:
+    image_limit = 0
+
 abbreviation_check = True # If true, user input an abbreviation, false if using full name of board
 
 if(board_selection in BOARD_ABBREVIATIONS.values()):
@@ -49,7 +60,6 @@ for i in range(len(thread_num_list)):
 # thread_json_url is now a list of every JSON api request for every thread on a board
 
 thread_json_data = []
-#now we need to parse the new json_url with a loop
 
 thread_local = local()
 
@@ -69,7 +79,7 @@ with ThreadPoolExecutor(max_workers=100) as executor:
 
 image_link_list = []
 # print(thread_json_data[0]["posts"][0]["tim"])
-def check_for_image(i, j):
+def check_for_image(i:int, j:int) -> Boolean:
     try:
         thread_json_data[i]["posts"][j]["tim"]
         return True
@@ -88,10 +98,27 @@ for i in range(len(thread_json_data)):
             continue
         
 
+def create_directory(file_path, board_selection, current_time):
+    path_string = os.path.join(file_path, board_selection, current_time)
+    if(not os.path.exists(path_string)):
+        os.makedirs(path_string)
+
+def generate_time_string() -> String:
+    dt = datetime.datetime.now()
+    return dt.strftime("%m_%d_%Y_%H_%M_%S")
+
 # download all images
+current_time = generate_time_string()
+create_directory(file_path, board_selection, current_time)
 
-# for i in range(len(image_link_list)):
+for i in range(len(image_link_list)):
+    if(i < image_limit & image_limit != 0):
+        substring_index = len(board_selection) + 20 # 20 is number of characters at the start of the URL
+        file_name = str(image_link_list[i])[substring_index:]
 
-#     img_data = requests.get(image_link_list[i]).content
-#     with open('')
-print(image_link_list)
+        write_location = os.path.join(file_path, board_selection, current_time, file_name)
+        img_data = requests.get(image_link_list[i]).content
+        with open(write_location, 'wb') as handler:
+            handler.write(img_data)
+    else:
+        break
